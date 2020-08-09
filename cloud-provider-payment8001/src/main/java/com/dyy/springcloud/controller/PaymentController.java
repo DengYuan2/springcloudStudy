@@ -67,4 +67,10 @@ public class PaymentController {
         return this.discoveryClient;
 
     }
+
+    //仿照默认的轮询算法，自定义负载均衡算法，并使用
+    @GetMapping("/payment/lb")
+    public String getPaymentLB(){
+        return serverPort;
+    }
 }
