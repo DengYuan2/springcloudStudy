@@ -1,0 +1,31 @@
+server:
+  port: 7001
+
+#todo 防止一个挂掉，就全挂掉了，所以要有两个eureka注册中心
+ #todo 只有一个注册中心时
+#eureka:
+#  instance:
+#    hostname: localhost #eureka服务端的实例名称
+#  client:
+#    register-with-eureka: false  #false表示不向注册中心自己注册自己
+#    fetch-registry: false #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+#    service-url:
+#      #设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址
+#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+ #todo 两个注册中心时
+eureka:
+  instance:
+    hostname: eureka7001.com #eureka服务端的实例名称，todo 此处已经更改过hosts文件了
+  client:
+    register-with-eureka: false  #false表示不向注册中心自己注册自己
+    fetch-registry: false #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+      #设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址
+      #todo 两台服务中心要相互注册
+      defaultZone: http://eureka7002.com:7002/eureka/
+#  server:
+#    #关闭自我保护机制，保证服务不可用时被及时剔除
+#    enable-self-preservation: false
+#    #时间间隔极小
+#    eviction-interval-timer-in-ms: 2000

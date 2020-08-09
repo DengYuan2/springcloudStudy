@@ -1,0 +1,28 @@
+server:
+  port: 7002
+
+  #todo 只有一个注册中心时
+  #eureka:
+  #  instance:
+  #    hostname: localhost #eureka服务端的实例名称
+  #  client:
+  #    register-with-eureka: false  #false表示不向注册中心自己注册自己
+  #    fetch-registry: false #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+  #    service-url:
+  #      #设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址
+  #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+  #todo 两个注册中心时
+  #因为要建立两个eureka服务器，不能都用localhost
+  #而且要相互注册，故defaultZone里的东西也要改
+  #故要先改C:\Windows\System32\drivers\etc\hosts配置文件
+eureka:
+  instance:
+    hostname: eureka7002.com #eureka服务端的实例名称，todo 此处已经更改过hosts文件了
+  client:
+    register-with-eureka: false  #false表示不向注册中心自己注册自己
+    fetch-registry: false #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+      #设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址
+      #todo 两台服务中心要相互注册
+      defaultZone: http://eureka7001.com:7001/eureka/

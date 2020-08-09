@@ -15,7 +15,11 @@ import javax.security.auth.login.Configuration;
 @RestController
 @Slf4j
 public class OrderController {
-    public static final String PAYMENT_URL="http://localhost:8001";
+    //这是单机版时，写死没关系
+//    public static final String PAYMENT_URL="http://localhost:8001";
+
+    //但是多机版时，只认微服务名称（即yml中spring.application.name），不认ip和端口，实现负载均衡
+    public static final String PAYMENT_URL="http://CLOUD-PAYMENT-SERVICE";
 
     @Resource
     private RestTemplate restTemplate;

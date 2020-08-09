@@ -1,0 +1,9 @@
+server:
+  port: 8004
+spring:
+  application:
+    #服务名称，即注册zookeeper到服务中心的名称
+    name: cloud-provider-payment
+  cloud:
+    zookeeper:
+      connect-string: #某zookeeper机器的ip+端口号
