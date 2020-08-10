@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -71,6 +72,17 @@ public class PaymentController {
     //仿照默认的轮询算法，自定义负载均衡算法，并使用
     @GetMapping("/payment/lb")
     public String getPaymentLB(){
+        return serverPort;
+    }
+
+    //为了演示OpenFeign的超时设置【provider这里】
+    @GetMapping("/payment/feign/timeout")
+    public String paymentFeignTimeout(){
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return serverPort;
     }
 }
