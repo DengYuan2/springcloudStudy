@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  * 用feign调用Provider端的接口
  */
 @Component
-@FeignClient(value = "CLOUD-PROVIDER-HYSTRIX-PAYMENT")
+//@FeignClient(value = "CLOUD-PROVIDER-HYSTRIX-PAYMENT")
+@FeignClient(value = "CLOUD-PROVIDER-HYSTRIX-PAYMENT",fallback = PaymentFallbackService.class) //加上服务降级的处理
 public interface PaymentHystrixService {
 
     @GetMapping("/payment/hystrix/ok/{id}")
@@ -18,5 +19,7 @@ public interface PaymentHystrixService {
 
     @GetMapping("/payment/hystrix/timeout/{id}")
     public String paymentInfo_TimeOut(@PathVariable("id")Integer id);
+
+
 
 }
