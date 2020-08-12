@@ -1,10 +1,13 @@
 package com.dyy.springcloud.service;
 
+import cn.hutool.core.util.IdUtil;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -66,5 +69,38 @@ public class PaymentService {
 //        int age =10/0;
 //        return "线程池："+Thread.currentThread().getName()+" paymentInfo_Timeout，id:"+id+"\t"+"O(∩_∩)O 哈哈~";
 //    }
+
+    //***上面是服务降级，下面讲服务熔断***************************************************************
+
+
+    /**
+     * 断路器的打开和关闭,是按照一下5步决定的
+     *     1,并发此时是否达到我们指定的阈值：requestVolumeThreshold
+     *     2,错误百分比,比如我们配置了60%,那么如果并发请求中,10次有6次是失败的,就开启断路器：errorThresholdPercentage
+     *     3,上面的条件符合,断路器改变状态为open(开启)
+     *     4,这个服务的断路器开启,所有请求无法访问
+     *     5,在我们的时间窗口期,期间,尝试让一些请求通过(半开状态),如果请求还是失败,证明断路器还是开启状态,服务没有恢复
+     *         如果请求成功了,证明服务已经恢复,断路器状态变为close关闭状态
+     * @param id
+     * @return
+     */
+    @HystrixCommand(fallbackMethod = "paymentCircuitBreaker_fallback",commandProperties = { //兜底方法
+            @HystrixProperty(name = "circuitBreaker.enabled",value = "true"), //是否开启断路器
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "10"), //请求次数
+            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds",value = "10000"), //时间窗口期
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage",value = "60") //失败率达到多少后跳闸/开启断路器
+    })
+    public String paymentCircuitBreaker(@PathVariable("id") Integer id){
+        if (id<0){
+            throw new RuntimeException("*****id不能为负数~~"); //出现异常，到兜底方法中去
+        }
+        String serialNumber= IdUtil.simpleUUID(); //类似于UUID.randomUUID().toString();此处用得是hutool工具包中的方法
+        return Thread.currentThread().getName()+"\t"+"调用成功，流水号："+serialNumber;
+    }
+
+    public String paymentCircuitBreaker_fallback(@PathVariable("id")Integer id){
+        return "id不能为负数，请稍后再试，/(ㄒoㄒ)/~~ id："+id;
+
+    }
 
 }
